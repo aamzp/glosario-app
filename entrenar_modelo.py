@@ -1,15 +1,36 @@
 import pandas as pd
+
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 import joblib
+import re
+
+from unidecode import unidecode
+
+# Función de limpieza
+def limpiar_oracion(texto):
+    if pd.isna(texto):
+        return ""
+    texto = unidecode(texto)
+    texto = texto.lower()
+    texto = re.sub(r"[“”\"«»‘’]", "", texto)
+    texto = re.sub(r"[–—\-•°·•]", "", texto)
+    texto = re.sub(r"[(){}\[\]]", "", texto)
+    texto = re.sub(r"[^a-záéíóúüñ0-9\s.,;:]", "", texto)
+    texto = re.sub(r"\s+", " ", texto).strip()
+    return texto
 
 # Cargar dataset
 df = pd.read_csv("datasets/dataset_definiciones_final.csv", sep=";")
 
+
+# Aplicar limpieza
+df["oracion_limpia"] = df["oracion"].apply(limpiar_oracion)
+
 # Separar oraciones y etiquetas
-X = df["oracion"]
+X = df["oracion_limpia"]
 y = df["es_definicion"]
 
 # Entrenamiento y validación
