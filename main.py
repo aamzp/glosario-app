@@ -8,7 +8,7 @@ import os
 '''
 Cargar el modelo balanceado
 '''
-modelo_path = "modelo_definicion_balanceado.pkl"
+modelo_path = "modelo_definicion.pkl"
 modelo_pipeline = joblib.load(modelo_path)
 vectorizer = modelo_pipeline.named_steps["vectorizer"]
 modelo = modelo_pipeline.named_steps["classifier"]
